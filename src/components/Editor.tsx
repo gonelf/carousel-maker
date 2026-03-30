@@ -219,10 +219,11 @@ export default function Editor() {
             // small delay to ensure rendering is complete
             await new Promise(resolve => setTimeout(resolve, 100));
             
-            const dataUrl = await htmlToImage.toPng(slideElement, {
+            const dataUrl = await htmlToImage.toJpeg(slideElement, {
               width: 1080,
               height: 1080,
-              pixelRatio: 2, // 2x for high quality, will be rescaled by addImage
+              pixelRatio: 2,
+              quality: 0.8,
               style: {
                 transform: 'none',
                 left: '0',
@@ -233,7 +234,7 @@ export default function Editor() {
             });
             
             if (i > 0) pdf.addPage([810, 810], 'portrait');
-            pdf.addImage(dataUrl, 'PNG', 0, 0, 810, 810);
+            pdf.addImage(dataUrl, 'JPEG', 0, 0, 810, 810, undefined, 'FAST');
           } catch (slideErr) {
             console.error(`Error capturing slide ${i} (${slideId}):`, slideErr);
             throw slideErr; // rethrow to catch in main block
