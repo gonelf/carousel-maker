@@ -68,12 +68,13 @@ export async function POST(req: Request) {
       } else {
          return NextResponse.json({ error: "Invalid response format from Gemini" }, { status: 500 });
       }
-    } catch {
-      console.error("Failed to parse Gemini output:", outputText);
+    } catch (parseError) {
+      console.error("Failed to parse Gemini output:", outputText, parseError);
       return NextResponse.json({ error: "Failed to parse Gemini output" }, { status: 500 });
     }
-  } catch {
-    console.error("API Error");
-    return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 });
+  } catch (error) {
+    console.error("API Error in /api/generate:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
